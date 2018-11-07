@@ -1,12 +1,9 @@
 package org.inlighting.shiro;
 
-import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.inlighting.bean.ResponseBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
@@ -14,11 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-public class JWTFilter extends BasicHttpAuthenticationFilter {
+public class UserFilter extends BasicHttpAuthenticationFilter {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 判断用户是否想要登入。
@@ -61,9 +57,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
             } catch (Exception e) {
-                responseJson(request, response,e.getMessage());
-                //response401(request, response);
-                return false;//如果在这里返回了false，请求会被直接拦截，用户看不到任何东西
+                response401(request, response);
             }
         }
         return true;
@@ -95,30 +89,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
             httpServletResponse.sendRedirect("/401");
         } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseJson(ServletRequest req, ServletResponse resp,String message) {
-        try {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
-            httpServletResponse.setCharacterEncoding("utf-8");
-            PrintWriter out = httpServletResponse.getWriter();
-            httpServletResponse.setContentType("application/json; charset=utf-8");
-            if(StringUtils.isEmpty(message)){
-                message = "非法请求，请重新登陆";
-            }
-            ResponseBean res = new ResponseBean(401, message, "");
-            JSONObject responseJSONObject = (JSONObject) (JSONObject.toJSON(res)); //将实体对象转换为JSON Object转换
-            out.print(responseJSONObject.toString());
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            logger.warn("api请求返回处理JSON异常：{}",e.getMessage());
-        } catch (IllegalStateException e) {
-            logger.warn("api请求返回处理JSON异常：{}",e.getMessage());
-        } catch (Exception e) {
-            logger.warn("api请求返回处理JSON异常：{}",e.getMessage());
+            LOGGER.error(e.getMessage());
         }
     }
 }

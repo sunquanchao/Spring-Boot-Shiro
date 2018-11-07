@@ -26,7 +26,7 @@ public class WebController {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseBean login(@RequestParam("username") String username,
                               @RequestParam("password") String password) {
         UserBean userBean = userService.getUser(username);
@@ -70,4 +70,77 @@ public class WebController {
     public ResponseBean unauthorized() {
         return new ResponseBean(401, "Unauthorized", null);
     }
+    
+    
+    //////////test/////////////
+    
+    @GetMapping("/anon")
+    public ResponseBean anon() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "anon You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "You are guest", null);
+        }
+    }
+    
+    @GetMapping("/authc")
+    public ResponseBean authc() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "authc You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "authc You are guest", null);
+        }
+    }
+    @GetMapping("/api/b/authc")
+    public ResponseBean bauthc() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "authc You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "authc You are guest", null);
+        }
+    }
+    @GetMapping("/api/c/authc")
+    public ResponseBean cauthc() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "authc You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "authc You are guest", null);
+        }
+    }
+
+    @GetMapping("/api/c/c/authc")
+    public ResponseBean ccauthc() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "authc You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "authc You are guest", null);
+        }
+    }
+
+    @GetMapping("/authcview")
+    public ResponseBean authcview() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "authc You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "authc You are guest", null);
+        }
+    }
+    
+    @GetMapping("/authcedit")
+    public ResponseBean authcedit() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return new ResponseBean(200, "authc You are already logged in", null);
+        } else {
+            return new ResponseBean(200, "authc You are guest", null);
+        }
+    }
+    
+    
 }

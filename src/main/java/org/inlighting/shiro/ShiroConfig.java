@@ -48,22 +48,35 @@ public class ShiroConfig {
 
         factoryBean.setSecurityManager(securityManager);
         factoryBean.setUnauthorizedUrl("/401");
-
+        factoryBean.setLoginUrl("xxx.html");
         /*
          * 自定义url规则
          * http://shiro.apache.org/web.html#urls-
          */
         Map<String, String> filterRuleMap = new HashMap<>();
+        
+        // 访问401和404页面不通过我们的Filter
+        filterRuleMap.put("/login", "anon");
+        filterRuleMap.put("/anon/*", "anon");
+        filterRuleMap.put("/authc", "authc");
+        filterRuleMap.put("/api/b/authc", "anon");
+        filterRuleMap.put("/api/c/**", "authc");
+        filterRuleMap.put("/authcview", "authc,perms[\"view\"]\n");
+        filterRuleMap.put("/authcedit", "authc,perms[\"edit\"]\n");
+        filterRuleMap.put("/require_auth", "authc");
         // 所有请求通过我们自己的JWT Filter
+        filterRuleMap.put("/api/**", "authc");
         filterRuleMap.put("/**", "jwt");
         // 访问401和404页面不通过我们的Filter
         filterRuleMap.put("/401", "anon");
+        
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return factoryBean;
     }
 
     /**
      * 下面的代码是添加注解支持
+     * @RequiresAuthentication 等
      */
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")

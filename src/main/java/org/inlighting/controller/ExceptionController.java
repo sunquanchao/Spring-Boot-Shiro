@@ -33,6 +33,7 @@ public class ExceptionController {
     }
 
     private HttpStatus getStatus(HttpServletRequest request) {
+    	System.out.println(request.getAttribute("javax.servlet.error.status_code"));
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         if (statusCode == null) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
